@@ -11,6 +11,7 @@ from textual.events import Key
 from widgets import SearchInput, SearchResultsList
 from search import get_home_directory_files, fuzzy_search
 from utils import open_file_or_directory
+from screens.chat_screen import ChatScreen # NEW: Import ChatScreen
 
 from pathlib import Path
 from typing import List
@@ -19,34 +20,30 @@ class FileSearchApp(App):
     """
     A Textual app for fuzzy searching files in the home directory.
     """
-    CSS_PATH = "../tcss/app.tcss" # Link to our CSS file (relative to this file)
+    CSS_PATH = "../tcss/app.tcss"
     BINDINGS = [
         ("ctrl+c", "quit", "Quit"),
-        ("ctrl+s", "focus_search", "Focus Search"), # Custom binding to quickly focus search
+        ("ctrl+s", "focus_search", "Focus Search"),
+        ("ctrl+g", "push_screen('chat_screen')", "Gemini Chat"), # NEW: Binding to directly open chat
     ]
 
-    # Reactive state to store all home directory paths (loaded once)
+    SCREENS = {"chat_screen": ChatScreen} # Register the new screen
+
     all_home_paths: reactive[List[Path]] = reactive(list)
-    # Reactive state for the currently displayed search results
     current_search_results: reactive[List[Path]] = reactive(list)
 
     def compose(self) -> ComposeResult:
-        """Create child widgets for the app's layout."""
         yield Header()
-        with Container(): # A container to hold the input and results list
+        with Container():
             yield SearchInput(placeholder="Type to search...", id="search-input")
             yield SearchResultsList(id="results-list")
         yield Footer()
 
     def on_mount(self) -> None:
-        """Called after the app is mounted (initialized)."""
-        # Load files in a background worker to keep the UI responsive
         self.run_worker(self._load_files_worker(), name="file_loader")
-        # Set initial focus to the search input
         self.query_one(SearchInput).focus()
 
     async def _load_files_worker(self) -> None:
-        """Worker function to load all files from the home directory."""
         self.log("Starting to load home directory files...")
         search_input = self.query_one(SearchInput)
         search_input.placeholder = "Loading files... Please wait."
@@ -56,23 +53,28 @@ class FileSearchApp(App):
             self.log(f"Loaded {len(self.all_home_paths)} files and directories.")
         finally:
             search_input.placeholder = "Type to search..."
-            search_input.refresh() # Update the placeholder text in the UI
+            search_input.refresh()
 
     async def watch_current_search_results(self, results: List[Path]) -> None:
-        """
-        Called automatically by Textual when `current_search_results` reactive state changes.
-        Updates the `SearchResultsList` widget.
-        """
         results_list = self.query_one(SearchResultsList)
         results_list.update_results(results)
 
     async def on_input_changed(self, event: Input.Changed) -> None:
         """
         Handles the standard `Input.Changed` message.
-        Performs the fuzzy search and updates the `current_search_results`.
+        Checks for ':' prefix to switch to chat mode, otherwise performs fuzzy search.
         """
         query = event.value 
-        self.current_search_results = fuzzy_search(query, self.all_home_paths, limit=10)
+
+        if query.startswith(":"):
+            # User wants to chat. Switch to chat screen.
+            # Clear input and current search results immediately
+            self.query_one(SearchInput).value = ""
+            self.current_search_results = []
+            self.push_screen("chat_screen") # Push the chat screen onto the stack
+        else:
+            # Regular fuzzy search
+            self.current_search_results = fuzzy_search(query, self.all_home_paths, limit=10)
 
     async def on_key(self, event: Key) -> None:
         """
@@ -135,3 +137,8 @@ class FileSearchApp(App):
     def action_focus_search(self) -> None:
         """Action to focus the search input."""
         self.query_one(SearchInput).focus()
+
+    # NEW: Action to push the chat screen
+    def action_push_screen(self, screen_name: str) -> None:
+        """Pushes a named screen onto the screen stack."""
+        self.push_screen(screen_name)

@@ -1,0 +1,102 @@
+/* textual_file_search/tcss/chat_screen.tcss */
+
+Screen {
+    background: #282a36; /* Match main app background */
+    color: #f8f8f2;
+    layout: vertical; /* Default layout for screens */
+}
+
+Header {
+    background: #44475a;
+    color: #f8f8f2;
+    dock: top;
+    height: 2;
+    text-align: center;
+    content-align: center middle;
+    text-style: bold;
+}
+
+Footer {
+    background: #44475a;
+    color: #f8f8f2;
+    dock: bottom;
+    height: 2;
+    content-align: center middle; /* Simpler footer for chat screen */
+}
+
+#chat-display {
+    height: 1fr; /* Takes up all available vertical space */
+    width: 100%;
+    padding: 1 2; /* Padding around the chat messages */
+    overflow-y: scroll; /* Enable vertical scrolling */
+}
+
+.message {
+    width: 100%;
+    padding: 1 2; /* Padding inside each message bubble */
+    margin-bottom: 1; /* Space between messages */
+    border: none; /* No border for messages */
+    /* REMOVED: border-radius is not supported in Textual CSS directly */
+    /* If you want rounded corners on the message *container*, you could try 'border: round;' on the Static,
+       but it might not look like typical chat bubbles. Relying on background and padding for visual separation is
+       often preferred for Textual chat UIs. */
+}
+
+.user-message {
+    background: #44475a; /* Darker background for user messages */
+    color: #f8f8f2;
+    text-align: right; /* Align user messages to the right */
+}
+
+.ai-message {
+    background: #383a59; /* Distinct background for AI messages */
+    color: #f8f8f2;
+    text-align: left; /* Align AI messages to the left */
+}
+
+#chat-controls {
+    dock: bottom;
+    height: auto; /* Height adapts to content */
+    padding: 1 2;
+    background: #44475a; /* Background for the input/buttons area */
+    /* CORRECTED: Use align-vertical for vertical alignment in a Horizontal layout */
+    align-vertical: middle; /* Vertically align input and buttons within the Horizontal container */
+}
+
+#chat-input {
+    width: 1fr; /* Input takes up most of the space */
+    height: 3;
+    background: #282a36;
+    color: #f8f8f2;
+    border: solid #6272a4; /* Subtle border for input */
+    padding: 0 2;
+    content-align: left middle;
+}
+
+#chat-input:focus {
+    border: solid #8be9fd; /* Accent color on focus */
+}
+
+#send-button, #reset-button {
+    width: auto; /* Buttons size to content */
+    margin-left: 1; /* Space between input and buttons, and between buttons */
+    height: 3; /* Match input height */
+    background: #6272a4; /* Default button color */
+    color: #f8f8f2;
+    border: none;
+}
+
+#send-button:hover, #reset-button:hover {
+    background: #8be9fd; /* Accent color on hover */
+    color: #282a36; /* Dark text on hover */
+}
+
+Button.variant--primary {
+    background: #50fa7b; /* Green for primary action */
+    color: #282a36;
+}
+
+Button.variant--warning {
+    background: #ff79c6; /* Pink for warning/reset */
+    color: #282a36;
+}
