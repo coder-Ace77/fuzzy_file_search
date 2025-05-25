@@ -1,0 +1,102 @@
+/* textual_file_search/tcss/app.tcss */
+
+Screen {
+    background: #282a36; /* Dracula Theme background */
+    color: #f8f8f2;      /* Dracula Theme foreground */
+}
+
+Header {
+    background: #44475a; /* A slightly lighter background than screen */
+    color: #f8f8f2;
+    dock: top;
+    height: 2;
+    text-align: center;
+    content-align: center middle;
+    text-style: bold;
+}
+
+Footer {
+    background: #44475a; /* Match header background */
+    color: #f8f8f2;
+    dock: bottom;
+    height: 2;
+    layout: grid;
+    grid-size: 2;
+    grid-columns: 1fr auto; /* Still using auto for status text width */
+    padding-left: 2;
+    padding-right: 2;
+    content-align: center middle;
+}
+
+.footer-status-label {
+    text-align: right;
+    color: #bd93f9; /* Dracula Theme purple for status */
+    text-style: italic;
+}
+
+Container {
+    layout: vertical;
+    width: 100%;
+    height: 1fr;
+    padding: 2; /* Increased overall padding for spacing */
+}
+
+SearchInput {
+    height: 3;
+    width: 100%;
+    margin-bottom: 1; /* Space below the input */
+    background: #383a59; /* A distinct dark shade for the input field */
+    color: #f8f8f2;
+    border: none; /* Remove border entirely by default */
+    /* Corrected: Removed the '1' from border-bottom property */
+    /* padding: 0 2; Horizontal padding inside input */
+    text-align: left;
+    content-align: left middle;
+    text-style: bold;
+}
+
+SearchInput:focus {
+    /* Corrected: Removed the '1' from border-bottom property */
+}
+
+SearchResultsList {
+    height: 1fr;
+    width: 100%;
+    border: none; /* Remove border entirely */
+    background: #282a36; /* Match screen background for seamless look */
+    padding: 1; /* Inner padding for the list items */
+    margin-top: 1; /* Add a bit of space above the list */
+    overflow-y: scroll;
+}
+
+SearchResultsList:focus {
+    /* No border on focus for the list, maintain minimal look */
+}
+
+ListItem {
+    padding: 0 2; /* Horizontal padding for list items */
+    height: 1; /* Single line height */
+    /* Corrected: Changed 0.5 to 1. Using 1 character unit for vertical margin. */
+    margin-bottom: 1; /* Add vertical margin between list items */
+    background: #282a36; /* Match list background */
+    color: #f8f8f2; /* Default text color */
+    text-align: left;
+    content-align: left middle;
+}
+
+ListItem:hover {
+    background: #44475a; /* Subtle background change on hover */
+    color: #f8f8f2;
+}
+
+ListItem.-cursor {
+    background: #6272a4; /* A subdued accent color for selected item */
+    color: #f8f8f2;
+    text-style: bold;
+}
+
+Label {
+    width: 100%;
+    height: 1;
+    content-align: left middle;
+}
